@@ -6,8 +6,6 @@ import QtQuick.Dialogs
 ApplicationWindow  {
     width: 400
     height: 300
-    minimumWidth: 400
-    minimumHeight: 300
     visible: true
     title: qsTr("歌词翻译合并")
     FileDialog {
@@ -125,9 +123,7 @@ ApplicationWindow  {
             MenuItem {
                 text: "复制"
                 onClicked: {
-                    textArea_lrc.selectAll()
                     textArea_lrc.copy()
-                    textArea_lrc.selectAll()
                 }
             }
             MenuItem {
@@ -138,7 +134,13 @@ ApplicationWindow  {
                 }
             }
             MenuItem {
-                text: "清空(可撤销)"
+                text: "全选"
+                onClicked: {
+                    textArea_lrc.selectAll()
+                }
+            }
+            MenuItem {
+                text: "清空"
                 enabled: !root.isPreview
                 onClicked: {
                     textArea_lrc.clear()
@@ -164,9 +166,7 @@ ApplicationWindow  {
             MenuItem {
                 text: "复制"
                 onClicked: {
-                    textArea_trans.selectAll()
                     textArea_trans.copy()
-                    textArea_trans.selectAll()
                 }
             }
             MenuItem {
@@ -177,7 +177,13 @@ ApplicationWindow  {
                 }
             }
             MenuItem {
-                text: "清空(可撤销)"
+                text: "全选"
+                onClicked: {
+                    textArea_trans.selectAll()
+                }
+            }
+            MenuItem {
+                text: "清空"
                 enabled: !root.isPreview
                 onClicked: {
                     textArea_trans.clear()
@@ -442,7 +448,7 @@ Alright 再不会回头
                             }
                         }
 
-                        TextArea {
+                        TextAreaNormal {
                             //备份保存目录
                             property string lrcBackupPath: ".lrc.txt"
                             id: textArea_lrc
@@ -481,7 +487,7 @@ Alright 再不会回头
                             }
                         }
 
-                        TextArea {
+                        TextAreaNormal {
                             //备份保存目录
                             property string transBackupPath: ".trans.txt"
                             id: textArea_trans
