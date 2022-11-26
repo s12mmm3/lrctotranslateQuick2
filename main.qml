@@ -120,6 +120,13 @@ ApplicationWindow  {
                     textArea_lrc.redo()
                 }
             }
+            MenuSeparator { }
+            MenuItem {
+                text: "剪贴"
+                onClicked: {
+                    textArea_lrc.cut()
+                }
+            }
             MenuItem {
                 text: "复制"
                 onClicked: {
@@ -133,6 +140,7 @@ ApplicationWindow  {
                     textArea_lrc.paste()
                 }
             }
+            MenuSeparator { }
             MenuItem {
                 text: "全选"
                 onClicked: {
@@ -163,6 +171,13 @@ ApplicationWindow  {
                     textArea_trans.redo()
                 }
             }
+            MenuSeparator { }
+            MenuItem {
+                text: "剪贴"
+                onClicked: {
+                    textArea_trans.cut()
+                }
+            }
             MenuItem {
                 text: "复制"
                 onClicked: {
@@ -176,6 +191,7 @@ ApplicationWindow  {
                     textArea_trans.paste()
                 }
             }
+            MenuSeparator { }
             MenuItem {
                 text: "全选"
                 onClicked: {
@@ -397,6 +413,7 @@ Alright 再不会回头
         property bool isPreview: false
         property alias textArea_lrc: textArea_lrc
         property alias textArea_trans: textArea_trans
+        //用于保存翻译的备份
         property string textBackup: ""
 
         property bool lock: true//用于两个滚动条的互斥锁
@@ -441,9 +458,9 @@ Alright 再不会回头
                             anchors.bottom: scrollView1.bottom
                             onPositionChanged: {
                                 if(root.lock) {
-                                    root.lock=false
-                                    scrollBar2.position=((textArea_lrc.lineCount*1.0)/(textArea_trans.lineCount*1.0))*scrollBar1.position
-                                    root.lock=true
+                                    root.lock = false
+                                    scrollBar2.position = ((textArea_lrc.lineCount*1.0)/(textArea_trans.lineCount*1.0))*scrollBar1.position
+                                    root.lock = true
                                 }
                             }
                         }
@@ -480,9 +497,9 @@ Alright 再不会回头
 
                             onPositionChanged: {
                                 if(root.lock) {
-                                    root.lock=false
+                                    root.lock = false
                                     scrollBar1.position=((textArea_trans.lineCount*1.0)/(textArea_lrc.lineCount*1.0))*scrollBar2.position
-                                    root.lock=true
+                                    root.lock = true
                                 }
                             }
                         }
@@ -546,23 +563,23 @@ Alright 再不会回头
 
         function process() {
             if(isPreview) {
-                root.textBackup=textArea_trans.text
-                let lrcList=textArea_lrc.text.split("\n")
-                let transList=textArea_trans.text.split("\n")
-                let result=""
+                root.textBackup = textArea_trans.text
+                let lrcList = textArea_lrc.text.split("\n")
+                let transList = textArea_trans.text.split("\n")
+                let result= ""
                 for(let i=0;i<Math.max(lrcList.length,transList.length);++i) {
                     if(i<lrcList.length) {
-                        if(lrcList[i].indexOf("[")!==-1 && lrcList[i].indexOf("]")!==-1) {
-                            if(checkBox.checkState!==Qt.Checked) {
-                                result=result+lrcList[i].substring(lrcList[i].indexOf("["),lrcList[i].indexOf("]")+1)
+                        if(lrcList[i].indexOf("[") !== -1 && lrcList[i].indexOf("]") !== -1) {
+                            if(checkBox.checkState !== Qt.Checked) {
+                                result = result + lrcList[i].substring(lrcList[i].indexOf("["),lrcList[i].indexOf("]") + 1)
                             }
-                            else result=result+lrcList[i]+" "
+                            else result += (lrcList[i]+" ")
                         }
                     }
                     if(i<transList.length) {
-                        result+=transList[i]
+                        result += transList[i]
                     }
-                    result+="\n"
+                    result += "\n"
                 }
                 textArea_trans.clear()
                 textArea_trans.append(result)

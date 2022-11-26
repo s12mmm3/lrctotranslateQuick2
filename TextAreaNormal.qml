@@ -35,6 +35,13 @@ TextArea {
                 root.redo()
             }
         }
+        MenuSeparator { }
+        MenuItem {
+            text: "剪贴"
+            onClicked: {
+                root.cut()
+            }
+        }
         MenuItem {
             text: "复制"
             onClicked: {
@@ -48,6 +55,7 @@ TextArea {
                 root.paste()
             }
         }
+        MenuSeparator { }
         MenuItem {
             text: "全选"
             onClicked: {
