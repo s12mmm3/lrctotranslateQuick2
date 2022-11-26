@@ -7,7 +7,7 @@ ApplicationWindow  {
     width: 400
     height: 300
     visible: true
-    title: qsTr("歌词翻译合并")
+    title: qsTr("翻译打轴")
     FileDialog {
         property string content: ""
         id: fileDialog_save
@@ -573,6 +573,34 @@ Alright 再不会回头
             }
         }
     }
+//    Drawer {
+//        id: drawer2
+//        edge: Qt.RightEdge  //从右边滑入
+//        width: 0.3 * root.width
+//        height: root.height
+//        dragMargin: parent.width / 3
+
+//        Column {
+//            anchors.centerIn: parent
+//            spacing: 30
+
+//            Rectangle {
+//                width: 100
+//                height: 100
+//                color: "blue"
+//            }
+//            Rectangle {
+//                width: 100
+//                height: 100
+//                color: "orange"
+//            }
+//            Rectangle {
+//                width: 100
+//                height: 100
+//                color: "green"
+//            }
+//        }
+//    }
     onClosing: {
         root.saveBackup()
     }

@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+//操作管理类
 class OperateMgr: public QObject
 {
     Q_OBJECT
