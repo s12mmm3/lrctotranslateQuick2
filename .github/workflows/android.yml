@@ -16,21 +16,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        include:
-          - qt_ver: 5.12.10
-            qt_arch: android_x86
-            os: ubuntu-20.04
-            qt_target: android
-          - qt_ver: 5.12.10
-            qt_arch: android_armv7
-            os: ubuntu-20.04
-            qt_target: android            
-          - qt_ver: 5.12.10
-            qt_arch: android_arm64_v8a
-            os: ubuntu-20.04
-            qt_target: android            
-          - qt_ver: 5.15.2
-            # here no qt_arch, use default
+        include:       
+          - qt_ver: 6.6.0
             os: ubuntu-20.04
             qt_target: android            
     steps:
