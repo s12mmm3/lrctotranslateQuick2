@@ -56,7 +56,6 @@ jobs:
 
       - name: CMake Build
         id: build
-        shell: cmd
         run: |
           cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }} -B ${{ env.BUILD_PATH }}
           ls
@@ -64,7 +63,6 @@ jobs:
       - name: CMake Install
         env:
           prefix: ${{ github.workspace }}
-        shell: pwsh
         run: |
           cd ${{ github.workspace }}
           cmake --build ${{ env.BUILD_PATH }} --target install --config ${{ env.BUILD_TYPE }} -j
