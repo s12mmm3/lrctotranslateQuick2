@@ -69,16 +69,16 @@ jobs:
       - name: Package
         id: package
         shell: pwsh
+        env:
+          path: ${{ github.workspace }}/${{ env.BUILD_PATH }}/${{ env.BUILD_TYPE }}
         run: |
-          cd ${{ github.workspace }}/${{ env.BUILD_PATH }}/${{ env.BUILD_TYPE }}
-          ls
-          Tree /F
+          Tree ${{ env.path }} /F
 
           # 拷贝依赖
-          windeployqt ${{ env.assume }} --qmldir . --no-translations --compiler-runtime lrctotranslateQuick2.exe
+          windeployqt ${{ env.assume }} --qmldir . --no-translations --compiler-runtime ${{ env.path }}/lrctotranslateQuick2.exe
           # 打包zip
-          Compress-Archive -Path * ${{ env.archiveName }}
-          Tree /F
+          Compress-Archive -Path ${{ env.path }}/* ${{ env.archiveName }}
+          Tree ${{ env.path }} /F
           ls
       # tag 查询github-Release
       # 上传artifacts          
