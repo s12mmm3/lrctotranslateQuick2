@@ -9,10 +9,9 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     strategy:
       matrix:
-        os: [macos-10.15,macos-11.0]
         include:
           # 6.6.0
           - qt_version: 6.6.2
@@ -25,14 +24,7 @@ jobs:
       qt_target: 'desktop'
       qt_host: 'mac'
       archiveName: 'QCloudMusicApi-${{ github.ref_name }}-${{ matrix.qt_version }}-${{ matrix.qt_arch }}'
-    steps:
-      # macos 11.0 默认环境变了,要指定
-      - name: prepare env
-        if: ${{ matrix.os == 'macos-11.0' }}
-        run: |
-          softwareupdate --all --install --force
-          sudo xcode-select --print-path
-          sudo xcode-select --switch /Library/Developer/CommandLineTools       
+    steps: 
       # 安装Qt
       - name: Install Qt
         if: 'true'
