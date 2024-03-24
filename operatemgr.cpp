@@ -1,5 +1,4 @@
 ﻿#include "operatemgr.h"
-#include "qcoreapplication.h"
 
 #include <QFile>
 #include <QUrl>
@@ -39,10 +38,7 @@ bool OperateMgr::saveFile(QString fileName, QString content) {
 }
 
 QString OperateMgr::getDetail() {
-//    QDir dir = QDir::current();
-//    qDebug() << QCoreApplication::applicationDirPath();
     return QStringLiteral("基于Qt%1编译\n"
-                          "版本号:" APP_VERSION "\n"
                           "编译时间:%2\n"
                           "系统:%3")
             .arg(QT_VERSION_STR)

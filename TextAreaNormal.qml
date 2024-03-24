@@ -8,7 +8,7 @@ TextArea {
         id: mouseArea
         anchors.fill: parent;
         acceptedButtons: Qt.RightButton //激活右键
-        onClicked: {
+        onClicked: function(mouse) {
             if (mouse.button === Qt.RightButton) { // 右键菜单
                 contentMenu.popup()
             }

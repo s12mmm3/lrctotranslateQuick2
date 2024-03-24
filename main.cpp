@@ -2,25 +2,24 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QtQml>
+#include <QQmlContext>
+// #include <QQuickStyle>
 
 int main(int argc, char *argv[])
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
     QGuiApplication app(argc, argv);
+    // QQuickStyle::setStyle("Material");
 
     QQmlApplicationEngine engine;
     OperateMgr operateMgr;
     engine.rootContext()->setContextProperty("$operateMgr", &operateMgr);
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-            QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
-    engine.load(url);
+    QObject::connect(
+        &engine,
+        &QQmlApplicationEngine::objectCreationFailed,
+        &app,
+        []() { QCoreApplication::exit(-1); },
+        Qt::QueuedConnection);
+    engine.loadFromModule("lrctotranslateQuick2", "Main");
 
     return app.exec();
 }
