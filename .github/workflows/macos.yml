@@ -23,7 +23,7 @@ jobs:
       assume: --release
       qt_target: 'desktop'
       qt_host: 'mac'
-      archiveName: 'QCloudMusicApi-${{ github.ref_name }}-${{ matrix.qt_version }}-${{ matrix.qt_arch }}'
+      archiveName: 'QCloudMusicApi-${{ matrix.qt_version }}-${{ matrix.qt_arch }}'
     steps: 
       # 安装Qt
       - name: Install Qt
@@ -64,6 +64,7 @@ jobs:
         run: |
           # 拷贝依赖
           macdeployqt ${{ github.workspace }}/${{ env.BUILD_PATH }}/${{ env.BUILD_TYPE }}/lrctotranslateQuick2.app -qmldir=. -verbose=1 -dmg
+          ls
       # 上传artifacts          
       - uses: actions/upload-artifact@v2
         with:
@@ -75,7 +76,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ github.workspace }}/lrctotranslateQuick2.dmg
+          file: ${{ github.workspace }}/${{ env.BUILD_PATH }}/${{ env.BUILD_TYPE }}/lrctotranslateQuick2.dmg
           asset_name: ${{ env.archiveName }}
           tag: ${{ github.ref }}
           overwrite: true
