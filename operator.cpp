@@ -37,8 +37,8 @@ QString Operator::getDetail() {
     return QStringLiteral("基于Qt%1编译\n"
                           "编译时间:%2\n"
                           "系统:%3")
-            .arg(QT_VERSION_STR)
-            .arg(__DATE__)
-            .arg(QSysInfo::prettyProductName());
+        .arg(QT_VERSION_STR)
+        .arg(__DATE__)
+        .arg(QSysInfo::prettyProductName());
 }
 

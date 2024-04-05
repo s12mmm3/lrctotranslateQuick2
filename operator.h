@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-//操作管理类
 class Operator: public QObject
 {
     Q_OBJECT

@@ -1,4 +1,5 @@
 ﻿#include "operator.h"
+#include "lyrichelper.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -11,8 +12,13 @@ int main(int argc, char *argv[])
     // QQuickStyle::setStyle("Material");
 
     QQmlApplicationEngine engine;
+
     Operator operator0;
     engine.rootContext()->setContextProperty("$operator", &operator0);
+
+    LyricHelper lyricHelper;
+    engine.rootContext()->setContextProperty("$lyricHelper", &lyricHelper);
+
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

@@ -275,6 +275,9 @@ ApplicationWindow  {
 
                 TextAreaNormal {
                     id: textArea_lrc
+                    onTextChanged: {
+                        console.log($lyricHelper.toQString($lyricHelper.fromQString(text)))
+                    }
                 }
             }
             ScrollView {
