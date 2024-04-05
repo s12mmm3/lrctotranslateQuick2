@@ -2,7 +2,11 @@
 
 #include <QRegularExpression>
 
-QList<LyricType> LyricHelper::fromQString(QString string)
+Lyric::Lyric() { }
+
+Lyric::Lyric(int time, QString string): LyricType ( time, string ) { }
+
+QList<Lyric> LyricHelper::fromQString(QString string)
 {
     QStringList lines;
     for(auto& line: string.split('\n'))
@@ -14,11 +18,11 @@ QList<LyricType> LyricHelper::fromQString(QString string)
     return fromQStringList(lines);
 }
 
-QList<LyricType> LyricHelper::fromQStringList(QStringList stringList)
+QList<Lyric> LyricHelper::fromQStringList(QStringList stringList)
 {
-    QList<LyricType> lyrics;
+    QList<Lyric> lyrics;
     //进一步判断是否为LRC歌词
-    QList<LyricType> lyricsTemp; //临时存放初步收集的可能无序的结果
+    QList<Lyric> lyricsTemp; //临时存放初步收集的可能无序的结果
 
     //这里判断的标准以 比较广泛的方式支持读取进来
 
@@ -38,7 +42,7 @@ QList<LyricType> LyricHelper::fromQStringList(QStringList stringList)
 
         int textPos = 0; //非标签文本开始的位置
 
-        //尝试匹配时间标签
+        // 匹配时间标签
         QRegularExpressionMatchIterator i = timeReg.globalMatch(line);
         while (i.hasNext()) {
             QRegularExpressionMatch match = i.next();
@@ -46,7 +50,7 @@ QList<LyricType> LyricHelper::fromQStringList(QStringList stringList)
             textPos = match.capturedEnd(0);
         }
 
-        //尝试匹配其他标签
+        // 匹配其他标签
         QRegularExpressionMatchIterator j = otherReg.globalMatch(line);
         while (j.hasNext()) {
             QRegularExpressionMatch match = j.next();
@@ -54,8 +58,8 @@ QList<LyricType> LyricHelper::fromQStringList(QStringList stringList)
             textPos = match.capturedEnd(0);
         }
 
-        QString strLeft; //剩下的字符串
-        strLeft = line.right(line.size() - textPos);   //得到去除可能的标签后的字符串
+        // 得到去除标签后的字符串
+        QString strLeft = line.right(line.size() - textPos);
 
         for(auto& time: timeList) //只有当收集到时间标签时，才收集对应的歌词进入 lrcLyricsTemp
         {
@@ -132,16 +136,16 @@ QList<LyricType> LyricHelper::fromQStringList(QStringList stringList)
     return lyrics;
 }
 
-QStringList LyricHelper::toQStringList(QList<LyricType > lyrics)
+QStringList LyricHelper::toQStringList(QList<Lyric > lyrics)
 {
     QStringList rawLines;
     for (auto& lyric: lyrics) {
-        rawLines.push_back(lyricToQString(lyric));
+        rawLines.push_back(lyric.toQString());
     }
     return rawLines;
 }
 
-QString LyricHelper::toQString(QList<LyricType > lyrics)
+QString LyricHelper::toQString(QList<Lyric > lyrics)
 {
     QString rawText;
     for(auto& lyric: toQStringList(lyrics))
@@ -152,9 +156,9 @@ QString LyricHelper::toQString(QList<LyricType > lyrics)
     return rawText;
 }
 
-QString LyricHelper::lyricToQString(LyricType lyric)
+QString Lyric::toQString()
 {
-    int pos = lyric.first;
+    int pos = this->first;
     int ms = pos % 1000;
     pos = pos / 1000;
     int s = pos % 60;
@@ -165,5 +169,5 @@ QString LyricHelper::lyricToQString(LyricType lyric)
                             .arg(s, 2, 10, QChar('0')) // 秒
                             .arg(ms, 3, 10, QChar('0')); // 毫秒
 
-    return timeLabel + lyric.second;
+    return timeLabel + this->second;
 }
