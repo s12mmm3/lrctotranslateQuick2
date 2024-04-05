@@ -1,4 +1,4 @@
-﻿#include "operatemgr.h"
+﻿#include "operator.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
     // QQuickStyle::setStyle("Material");
 
     QQmlApplicationEngine engine;
-    OperateMgr operateMgr;
-    engine.rootContext()->setContextProperty("$operateMgr", &operateMgr);
+    Operator operator0;
+    engine.rootContext()->setContextProperty("$operator", &operator0);
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

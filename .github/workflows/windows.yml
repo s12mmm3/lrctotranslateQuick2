@@ -27,7 +27,7 @@ jobs:
       qt_target: 'desktop'
       qt_host: 'windows'
       # 压缩包名称
-      archiveName: 'lrctotranslateQuick2-${{ github.ref_name }}-${{ matrix.qt_version }}-${{ matrix.qt_arch }}'
+      archiveName: 'lrctotranslateQuick2-${{ matrix.qt_version }}-${{ matrix.qt_arch }}'
     # 步骤
     steps:
       # 安装Qt
@@ -93,6 +93,5 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ github.workspace }}/${{ env.BUILD_PATH }}/${{ env.archiveName }}
-          asset_name: ${{ env.archiveName }}
           tag: ${{ github.ref }}
           overwrite: true 

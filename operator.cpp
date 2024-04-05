@@ -1,15 +1,11 @@
-﻿#include "operatemgr.h"
+﻿#include "operator.h"
 
 #include <QFile>
 #include <QUrl>
 #include <QDateTime>
 #include <QDir>
 
-OperateMgr::OperateMgr()
-{
-
-}
-QString OperateMgr::readFile(QString fileName) {
+QString Operator::readFile(QString fileName) {
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         file.setFileName(QUrl(fileName).toLocalFile());
@@ -23,7 +19,7 @@ QString OperateMgr::readFile(QString fileName) {
     return result;
 }
 
-bool OperateMgr::saveFile(QString fileName, QString content) {
+bool Operator::saveFile(QString fileName, QString content) {
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         file.setFileName(QUrl(fileName).toLocalFile());
@@ -37,7 +33,7 @@ bool OperateMgr::saveFile(QString fileName, QString content) {
     return true;
 }
 
-QString OperateMgr::getDetail() {
+QString Operator::getDetail() {
     return QStringLiteral("基于Qt%1编译\n"
                           "编译时间:%2\n"
                           "系统:%3")

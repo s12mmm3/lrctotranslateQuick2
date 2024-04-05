@@ -17,7 +17,7 @@ ApplicationWindow  {
         rejectLabel: "取消"
         fileMode: FileDialog.SaveFile
         onAccepted: {
-            $operateMgr.saveFile(currentFile, content)
+            $operator.saveFile(currentFile, content)
         }
     }
     menuBar: MenuBar {
@@ -59,7 +59,7 @@ ApplicationWindow  {
                     rejectLabel: "取消"
                     fileMode: FileDialog.OpenFile
                     onAccepted: {
-                        textArea_lrc.text = $operateMgr.readFile(currentFile)
+                        textArea_lrc.text = $operator.readFile(currentFile)
                     }
                 }
             }
@@ -76,7 +76,7 @@ ApplicationWindow  {
                     rejectLabel: "取消"
                     fileMode: FileDialog.OpenFile
                     onAccepted: {
-                        textArea_trans.text = $operateMgr.readFile(currentFile)
+                        textArea_trans.text = $operator.readFile(currentFile)
                     }
                 }
             }
@@ -209,7 +209,7 @@ ApplicationWindow  {
             MenuItem {
                 text: "关于"
                 onClicked: {
-                    messageDialog_about.detailedText = $operateMgr.getDetail()
+                    messageDialog_about.detailedText = $operator.getDetail()
                     messageDialog_about.open()
                 }
                 MessageDialog {
@@ -338,7 +338,6 @@ ApplicationWindow  {
 
         function process() {
             if(isPreview) {
-                root.textBackup = textArea_trans.text
                 let lrcList = textArea_lrc.text.split("\n")
                 let transList = textArea_trans.text.split("\n")
                 let result = ""
