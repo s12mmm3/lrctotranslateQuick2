@@ -276,7 +276,8 @@ ApplicationWindow  {
                 TextAreaNormal {
                     id: textArea_lrc
                     onTextChanged: {
-                        console.log($lyricHelper.toQString($lyricHelper.fromQString(text)))
+                        let lyrics = $lyricHelper.fromQString(text)
+                        console.log(JSON.stringify(lyrics, null, 2))
                     }
                 }
             }
