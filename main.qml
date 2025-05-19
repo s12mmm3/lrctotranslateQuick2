@@ -8,6 +8,10 @@ ApplicationWindow  {
     height: 720
     visible: true
     title: qsTr("翻译打轴")
+    id: root
+    property bool isPreview: false
+    property bool lock: true //用于两个滚动条的互斥锁
+    property string textBackup
     function saveTextToFile(callback) {
         fileDialog_save.callback = callback
         fileDialog_save.open()
@@ -118,10 +122,6 @@ ApplicationWindow  {
     Column {
         anchors.fill: parent
         spacing: 4
-        id: root
-        property bool isPreview: false
-
-        property bool lock: true //用于两个滚动条的互斥锁
         Row {
             id: row0
             width: parent.width
@@ -141,7 +141,7 @@ ApplicationWindow  {
 
         Row {
             width: parent.width
-            height: parent.height - row0.height - row2.height
+            height: parent.height - row0.height
             ScrollView {
                 width: parent.width / 2
                 height: parent.height
@@ -198,58 +198,41 @@ ApplicationWindow  {
                 }
             }
         }
-
-        Item {
-            id: row2
-            height: 50
-            width: parent.width
-            Button {
-                anchors.right: parent.right
-                anchors.rightMargin: 5
-                anchors.verticalCenter: parent.verticalCenter
-                text: root.isPreview ? "退出预览" : "预览"
-                onClicked: {
-                    root.isPreview = !(root.isPreview)
-                    root.process()
-                }
-            }
-
-            CheckBox {
-                id: checkBox
-                anchors.left: parent.left
-                anchors.leftMargin: 5
-                anchors.verticalCenter: parent.verticalCenter
-                checked: false
-                text: "合并为一句"
-            }
+    }
+    footer: DialogButtonBox {
+        CheckBox {
+            id: checkBox
+            checked: false
+            text: "合并为一句"
         }
 
-        function process() {
-            if(isPreview) {
-                let lrcList = textArea_lrc.text.split("\n")
-                let transList = textArea_trans.text.split("\n")
-                let result = ""
-                for(let i = 0; i < Math.max(lrcList.length, transList.length); ++i) {
-                    if(i < lrcList.length) {
-                        if(lrcList[i].indexOf("[") !== -1 && lrcList[i].indexOf("]") !== -1) {
-                            if(checkBox.checkState !== Qt.Checked) {
-                                result = result + lrcList[i].substring(lrcList[i].indexOf("["),lrcList[i].indexOf("]") + 1)
-                            }
-                            else result += (lrcList[i]+" ")
-                        }
-                    }
-                    if(i < transList.length) {
-                        result += transList[i]
-                    }
-                    result += "\n"
+        ToolButton {
+            text: root.isPreview ? "退出预览" : "预览"
+            onClicked: {
+                root.isPreview = !(root.isPreview)
+                root.process()
+            }
+        }
+    }
+
+    function process() {
+        if (isPreview) {
+            root.textBackup = textArea_trans.text
+            const lrcLines = textArea_lrc.text.split("\n")
+            const transLines = textArea_trans.text.split("\n")
+            let result = ""
+            for (let i = 0; i < Math.max(lrcLines.length, transLines.length); i++) {
+                if (i < lrcLines.length && lrcLines[i].includes("[") && lrcLines[i].includes("]")) {
+                    result += checkBox.checked
+                        ? `${lrcLines[i]} `
+                        : lrcLines[i].slice(lrcLines[i].indexOf("["), lrcLines[i].indexOf("]") + 1)
                 }
-                textArea_trans.clear()
-                textArea_trans.append(result)
+                if (i < transLines.length) result += transLines[i]
+                result += "\n"
             }
-            else {
-                textArea_trans.clear()
-                textArea_trans.append(root.textBackup)
-            }
+            textArea_trans.text = result
+        } else {
+            textArea_trans.text = root.textBackup
         }
     }
 }
