@@ -52,7 +52,7 @@ jobs:
       - name: CMake Build
         id: build
         run: |
-          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_INSTALL_PREFIX=${{ env.BUILD_PATH }}/${{ env.BUILD_TYPE }} -B ${{ env.BUILD_PATH }} -DCMAKE_OSX_ARCHITECTURES=x86_64;arm64
+          cmake -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_INSTALL_PREFIX=${{ env.BUILD_PATH }}/${{ env.BUILD_TYPE }} -B ${{ env.BUILD_PATH }} -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
           ls
       # CMake Install
       - name: CMake Install
