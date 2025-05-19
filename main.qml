@@ -8,17 +8,28 @@ ApplicationWindow  {
     height: 720
     visible: true
     title: qsTr("翻译打轴")
+    function saveTextToFile(callback) {
+        fileDialog_save.callback = callback
+        fileDialog_save.open()
+    }
     FileDialog {
-        property string content: ""
+        property var callback: undefined
         id: fileDialog_save
-        title: "另存为"
         nameFilters: ["Text files (*.txt)", "Lyric file (*.lrc)"]
-        acceptLabel: "确定"
-        rejectLabel: "取消"
         fileMode: FileDialog.SaveFile
-        onAccepted: {
-            $operator.saveFile(currentFile, content)
-        }
+        onAccepted: { if (callback) callback(currentFile) }
+    }
+
+    function getTextFromFile(callback) {
+        fileDialog_open.callback = callback
+        fileDialog_open.open()
+    }
+    FileDialog {
+        property var callback: undefined
+        id: fileDialog_open
+        nameFilters: [ "Text files (*.txt *.lrc)", ]
+        fileMode: FileDialog.OpenFile
+        onAccepted: { if (callback) callback(currentFile) }
     }
     menuBar: MenuBar {
         Menu {
@@ -26,7 +37,7 @@ ApplicationWindow  {
             MenuItem {
                 text: "新建"
                 onClicked: {
-                    if(textArea_lrc.text !== "" || textArea_trans.text !== "") {
+                    if (textArea_lrc.text || textArea_trans.text) {
                         messageDialog_new.open()
                     }
                 }
@@ -37,7 +48,7 @@ ApplicationWindow  {
                     text: "歌词或翻译不为空"
                     informativeText: "是否清空？"
                     onButtonClicked: {
-                        if(button === MessageDialog.Ok) {
+                        if (button === MessageDialog.Ok) {
                             textArea_lrc.text = ""
                             textArea_trans.text = ""
                             root.isPreview = false
@@ -49,49 +60,25 @@ ApplicationWindow  {
             MenuItem {
                 text: "打开歌词文本"
                 onClicked: {
-                    fileDialog_lrc.open()
-                }
-                FileDialog {
-                    id: fileDialog_lrc
-                    title: "打开txt、lrc文件"
-                    nameFilters: [ "Text files (*.txt *.lrc)", ]
-                    acceptLabel: "确定"
-                    rejectLabel: "取消"
-                    fileMode: FileDialog.OpenFile
-                    onAccepted: {
-                        textArea_lrc.text = $operator.readFile(currentFile)
-                    }
+                    getTextFromFile((currentFile) => textArea_lrc.text = $operator.readFile(currentFile))
                 }
             }
             MenuItem {
                 text: "打开翻译文本"
                 onClicked: {
-                    fileDialog_trans.open()
-                }
-                FileDialog {
-                    id: fileDialog_trans
-                    title: "打开txt、lrc文件"
-                    nameFilters: [ "Text files (*.txt *.lrc)", ]
-                    acceptLabel: "确定"
-                    rejectLabel: "取消"
-                    fileMode: FileDialog.OpenFile
-                    onAccepted: {
-                        textArea_trans.text = $operator.readFile(currentFile)
-                    }
+                    getTextFromFile((currentFile) => textArea_trans.text = $operator.readFile(currentFile))
                 }
             }
             MenuItem {
                 text: "歌词另存为"
                 onClicked: {
-                    fileDialog_save.content = textArea_lrc.text
-                    fileDialog_save.open()
+                    saveTextToFile((currentFile) => $operator.saveFile(currentFile, textArea_lrc.text))
                 }
             }
             MenuItem {
                 text: "翻译另存为"
                 onClicked: {
-                    fileDialog_save.content = textArea_trans.text
-                    fileDialog_save.open()
+                    saveTextToFile((currentFile) => $operator.saveFile(currentFile, textArea_trans.text))
                 }
             }
             MenuSeparator { }
@@ -110,18 +97,17 @@ ApplicationWindow  {
                     messageDialog_about.detailedText = $operator.getDetail()
                     messageDialog_about.open()
                 }
-                MessageDialog {
-                    id: messageDialog_about
-                    modality: Qt.ApplicationModal
-                    title: "关于"
-                    text: "本程序用于处理歌词与翻译的时间轴"
-                    informativeText: "作者:舰长的初号\nid:257800231"
-                    onButtonClicked: function(button) {
-                        if(button === MessageDialog.Ok) {
-                            close()
-                        }
-                    }
-                }
+            }
+        }
+    }
+    MessageDialog {
+        id: messageDialog_about
+        title: "关于"
+        text: "本程序用于处理歌词与翻译的时间轴"
+        informativeText: "作者:舰长的初号\nid:257800231"
+        onButtonClicked: function(button) {
+            if (button === MessageDialog.Ok) {
+                close()
             }
         }
     }
@@ -173,10 +159,6 @@ ApplicationWindow  {
 
                 TextArea {
                     id: textArea_lrc
-                    onTextChanged: {
-                        let lyrics = $lyricHelper.fromQString(text)
-                        console.log(JSON.stringify(lyrics, null, 2))
-                    }
                 }
             }
             ScrollView {
