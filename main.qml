@@ -4,8 +4,8 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 
 ApplicationWindow  {
-    width: 400
-    height: 300
+    width: 1280
+    height: 720
     visible: true
     title: qsTr("翻译打轴")
     FileDialog {
@@ -54,7 +54,7 @@ ApplicationWindow  {
                 FileDialog {
                     id: fileDialog_lrc
                     title: "打开txt、lrc文件"
-                    nameFilters: ["Text files (*.txt)", "Lyric file (*.lrc)"]
+                    nameFilters: [ "Text files (*.txt *.lrc)", ]
                     acceptLabel: "确定"
                     rejectLabel: "取消"
                     fileMode: FileDialog.OpenFile
@@ -71,7 +71,7 @@ ApplicationWindow  {
                 FileDialog {
                     id: fileDialog_trans
                     title: "打开txt、lrc文件"
-                    nameFilters: ["Text files (*.txt)", "Lyric file (*.lrc)"]
+                    nameFilters: [ "Text files (*.txt *.lrc)", ]
                     acceptLabel: "确定"
                     rejectLabel: "取消"
                     fileMode: FileDialog.OpenFile
@@ -99,108 +99,6 @@ ApplicationWindow  {
                 text: "退出"
                 onClicked: {
                     Qt.quit()
-                }
-            }
-        }
-        Menu {
-            title: qsTr("歌词")
-            MenuItem {
-                text: "撤销"
-                enabled: !root.isPreview && textArea_lrc.canUndo
-                onClicked: {
-                    textArea_lrc.undo()
-                }
-            }
-            MenuItem {
-                text: "恢复"
-                enabled: !root.isPreview && textArea_lrc.canRedo
-                onClicked: {
-                    textArea_lrc.redo()
-                }
-            }
-            MenuSeparator { }
-            MenuItem {
-                text: "剪贴"
-                onClicked: {
-                    textArea_lrc.cut()
-                }
-            }
-            MenuItem {
-                text: "复制"
-                onClicked: {
-                    textArea_lrc.copy()
-                }
-            }
-            MenuItem {
-                text: "粘贴"
-                enabled: !root.isPreview && textArea_lrc.canPaste
-                onClicked: {
-                    textArea_lrc.paste()
-                }
-            }
-            MenuSeparator { }
-            MenuItem {
-                text: "全选"
-                onClicked: {
-                    textArea_lrc.selectAll()
-                }
-            }
-            MenuItem {
-                text: "清空"
-                enabled: !root.isPreview
-                onClicked: {
-                    textArea_lrc.clear()
-                }
-            }
-        }
-        Menu {
-            title: qsTr("翻译")
-            MenuItem {
-                text: "撤销"
-                enabled: !root.isPreview && textArea_trans.canUndo
-                onClicked: {
-                    textArea_trans.undo()
-                }
-            }
-            MenuItem {
-                text: "恢复"
-                enabled: !root.isPreview && textArea_trans.canRedo
-                onClicked: {
-                    textArea_trans.redo()
-                }
-            }
-            MenuSeparator { }
-            MenuItem {
-                text: "剪贴"
-                onClicked: {
-                    textArea_trans.cut()
-                }
-            }
-            MenuItem {
-                text: "复制"
-                onClicked: {
-                    textArea_trans.copy()
-                }
-            }
-            MenuItem {
-                text: "粘贴"
-                enabled: !root.isPreview && textArea_trans.canPaste
-                onClicked: {
-                    textArea_trans.paste()
-                }
-            }
-            MenuSeparator { }
-            MenuItem {
-                text: "全选"
-                onClicked: {
-                    textArea_trans.selectAll()
-                }
-            }
-            MenuItem {
-                text: "清空"
-                enabled: !root.isPreview
-                onClicked: {
-                    textArea_trans.clear()
                 }
             }
         }
@@ -273,7 +171,7 @@ ApplicationWindow  {
                     }
                 }
 
-                TextAreaNormal {
+                TextArea {
                     id: textArea_lrc
                     onTextChanged: {
                         let lyrics = $lyricHelper.fromQString(text)
@@ -301,7 +199,7 @@ ApplicationWindow  {
                     }
                 }
 
-                TextAreaNormal {
+                TextArea {
                     id: textArea_trans
                     Rectangle {
                         //Background
