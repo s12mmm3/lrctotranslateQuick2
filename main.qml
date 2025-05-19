@@ -94,17 +94,21 @@ ApplicationWindow  {
             MenuItem {
                 text: "关于"
                 onClicked: {
-                    messageDialog_about.detailedText = $operator.getDetail()
                     messageDialog_about.open()
                 }
             }
         }
     }
     MessageDialog {
+        property var detail: $operator.getDetail()
         id: messageDialog_about
         title: "关于"
         text: "本程序用于处理歌词与翻译的时间轴"
         informativeText: "作者:舰长的初号\nid:257800231"
+        detailedText: ("基于Qt%1编译\n编译时间:%2\n系统:%3")
+        .arg(detail.QT_VERSION_STR)
+        .arg(detail.__DATE__)
+        .arg(detail.prettyProductName)
         onButtonClicked: function(button) {
             if (button === MessageDialog.Ok) {
                 close()

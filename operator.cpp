@@ -7,38 +7,41 @@
 
 QString Operator::readFile(QString fileName) {
     QFile file(fileName);
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    // 如果fileName是URL格式，则转换为本地路径
+    if (fileName.startsWith("file://")) {
         file.setFileName(QUrl(fileName).toLocalFile());
-        if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << file.errorString();
-            return "";
-        }
+    } else {
+        file.setFileName(fileName);
+    }
+    if (!file.open(QFile::ReadOnly)) {
+        return "";
     }
     auto result = file.readAll();
-    file.close();
+    file.close(); // 确保关闭文件
     return result;
 }
 
 bool Operator::saveFile(QString fileName, QString content) {
     QFile file(fileName);
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    // 如果fileName是URL格式，则转换为本地路径
+    if (fileName.startsWith("file://")) {
         file.setFileName(QUrl(fileName).toLocalFile());
-        if(!file.open(QIODevice::ReadWrite)) {
-            qDebug() << file.errorString();
-            return false;
-        }
+    } else {
+        file.setFileName(fileName);
     }
-    file.write(content.toStdString().data());
-    file.close();
+    if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
+        return false;
+    }
+    file.write(content.toUtf8());
+    file.close(); // 确保关闭文件
     return true;
 }
 
-QString Operator::getDetail() {
-    return QStringLiteral("基于Qt%1编译\n"
-                          "编译时间:%2\n"
-                          "系统:%3")
-        .arg(QT_VERSION_STR)
-        .arg(__DATE__)
-        .arg(QSysInfo::prettyProductName());
+QVariantMap Operator::getDetail() {
+    return {
+        { "QT_VERSION_STR", QT_VERSION_STR },
+        { "__DATE__", __DATE__ },
+        { "prettyProductName", QSysInfo::prettyProductName() },
+    };
 }
 
