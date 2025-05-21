@@ -18,7 +18,7 @@ qt_add_executable(${PROJECT_NAME}
 qt_add_qml_module(${PROJECT_NAME}
     URI lrctotranslateQuick2
     VERSION 1.0
-    QML_FILES Main.qml
+    QML_FILES main.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
