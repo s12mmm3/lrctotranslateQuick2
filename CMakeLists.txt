@@ -3,6 +3,21 @@ cmake_minimum_required(VERSION 3.16)
 project(lrctotranslateQuick2 VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi /EHa")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG")
+    set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+endif()
+if(APPLE)
+    if(IOS)
+        # Building for iOS
+    elseif(UNIX)
+        # Building for macOS
+        set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
+    else()
+    endif()
+endif()
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
 
