@@ -2,16 +2,22 @@
 import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Dialogs
+import QtQuick.Layouts
 
 ApplicationWindow  {
     width: 1280
     height: 720
-    visible: true
     title: qsTr("翻译打轴")
+    visible: true
     id: root
     property bool isPreview: false
-    property bool lock: true //用于两个滚动条的互斥锁
-    property string textBackup
+    property string textBackup: ""
+
+    property bool scrollBarLock: true // 用于两个滚动条的互斥锁
+    signal updateScrollBar(var value) // 添加信号用于同步滚动
+
+    readonly property bool isLandscape: true
+
     function saveTextToFile(callback) {
         fileDialog_save.callback = callback
         fileDialog_save.open()
@@ -113,101 +119,95 @@ ApplicationWindow  {
         .arg(detail.QT_VERSION_STR)
         .arg(detail.__DATE__)
         .arg(detail.prettyProductName)
-        onButtonClicked: function(button) {
-            if (button === MessageDialog.Ok) {
-                close()
-            }
-        }
+        onButtonClicked: (button) => { if (button === MessageDialog.Ok) close() }
     }
-    Column {
+
+    ColumnLayout {
         anchors.fill: parent
-        spacing: 4
-        Row {
-            id: row0
-            width: parent.width
-            Text {
-                width: parent.width / 2
-                text: "歌词"
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            Text {
-                width: parent.width / 2
-                text: "翻译"
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-        }
+        GridLayout {
+            flow: isLandscape ? GridLayout.LeftToRight : GridLayout.TopToBottom
+            Layout.preferredWidth: parent.width
+            Layout.fillHeight: true
 
-        Row {
-            width: parent.width
-            height: parent.height - row0.height
-            ScrollView {
-                width: parent.width / 2
-                height: parent.height
-                ScrollBar.vertical: ScrollBar {
-                    id: scrollBar1
-                    parent: parent
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    onPositionChanged: {
-                        if(root.lock) {
-                            root.lock = false
-                            scrollBar2.position = ((textArea_lrc.lineCount * 1.0) / (textArea_trans.lineCount * 1.0))
-                                    * scrollBar1.position
-                            root.lock = true
+            GroupBox {
+                title: qsTr("歌词")
+                Layout.preferredWidth: isLandscape ? parent.width / 2 : parent.height
+                Layout.fillHeight: true
+                ScrollView {
+                    anchors.fill: parent
+                    ScrollBar.vertical: ScrollBar {
+                        id: scrollBar1
+                        parent: parent
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        onPositionChanged: {
+                            if(root.scrollBarLock) {
+                                root.scrollBarLock = false
+                                root.updateScrollBar(textArea_lrc.lineCount * 1.0 * position)
+                                root.scrollBarLock = true
+                            }
+                        }
+                        Connections {
+                            target: root
+                            function onUpdateScrollBar(value) {
+                                scrollBar1.position = value / textArea_lrc.lineCount
+                            }
+                        }
+                    }
+                    TextArea {
+                        id: textArea_lrc
+                    }
+                }
+            }
+            GroupBox {
+                title: qsTr("翻译")
+                Layout.preferredWidth: isLandscape ? parent.width / 2 : parent.height
+                Layout.fillHeight: true
+                ScrollView {
+                    anchors.fill: parent
+                    ScrollBar.vertical: ScrollBar {
+                        id: scrollBar2
+                        parent: parent
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        onPositionChanged: {
+                            if(root.scrollBarLock) {
+                                root.scrollBarLock = false
+                                root.updateScrollBar(textArea_trans.lineCount * 1.0 * position)
+                                root.scrollBarLock = true
+                            }
+                        }
+                        Connections {
+                            target: root
+                            function onUpdateScrollBar(value) {
+                                scrollBar2.position = value / textArea_trans.lineCount
+                            }
+                        }
+                    }
+                    TextArea {
+                        id: textArea_trans
+                        readOnly: isPreview
+                        background: Rectangle {
+                            color: "#f0f0f0" // 灰色背景表示不可编辑
+                            border.color: "#ccc"
                         }
                     }
                 }
-
-                TextArea {
-                    id: textArea_lrc
-                }
-            }
-            ScrollView {
-                width: parent.width / 2
-                height: parent.height
-                ScrollBar.vertical: ScrollBar {
-                    id: scrollBar2
-                    parent: parent
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-
-                    onPositionChanged: {
-                        if(root.lock) {
-                            root.lock = false
-                            scrollBar1.position = ((textArea_trans.lineCount * 1.0) / (textArea_lrc.lineCount * 1.0))
-                                    * scrollBar2.position
-                            root.lock = true
-                        }
-                    }
-                }
-
-                TextArea {
-                    id: textArea_trans
-                    Rectangle {
-                        //Background
-                        anchors.fill: parent
-                        opacity: 0.2
-                        color: "grey"
-                        visible: root.isPreview
-                    }
-
-                }
             }
         }
+
     }
     footer: DialogButtonBox {
         CheckBox {
             id: checkBox
             checked: false
-            text: "合并为一句"
+            text: qsTr("合并为一句")
         }
 
         ToolButton {
-            text: root.isPreview ? "退出预览" : "预览"
+            text: root.isPreview ? qsTr("退出预览") : qsTr("预览")
             onClicked: {
                 root.isPreview = !(root.isPreview)
                 root.process()
@@ -235,4 +235,5 @@ ApplicationWindow  {
             textArea_trans.text = root.textBackup
         }
     }
+
 }
