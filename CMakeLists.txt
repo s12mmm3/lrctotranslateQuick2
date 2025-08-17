@@ -19,7 +19,7 @@ if(APPLE)
     endif()
 endif()
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Quick QuickControls2 Graphs)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
@@ -48,7 +48,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2
+    PRIVATE Qt6::Core Qt6::Gui Qt6::Quick Qt6::QuickControls2 Qt6::Graphs
 )
 
 include(GNUInstallDirs)
