@@ -20,7 +20,7 @@ jobs:
           - qt_version: 6.9.1
             qt_arch: win64_msvc2022_64
             arch: x64
-            modules: 'qthttpserver qtwebsockets qt3d qtgraphs qtquick3d'
+            modules: 'qthttpserver qtwebsockets qt3d qtgraphs qtquick3d qtshadertools'
     env:
       BUILD_TYPE: Release
       BUILD_PATH: build
