@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - '**'
+  workflow_dispatch:
 jobs:
   build:
     name: Build
@@ -15,23 +16,23 @@ jobs:
       # 矩阵配置
       matrix:
         include:
-          # 6.9.1
-          - qt_version: 6.9.1
+          # 6.11.0
+          - qt_version: 6.11.0
             qt_arch: linux_gcc_64
-            modules: 'qthttpserver qtwebsockets'
+            modules: 'qthttpserver qtwebsockets qt3d qtgraphs qtquick3d qtshadertools'
             cross_qt_arch: 'android_arm64_v8a'
-          - qt_version: 6.9.1
-            qt_arch: linux_gcc_64
-            modules: 'qthttpserver qtwebsockets'
-            cross_qt_arch: 'android_armv7'
-          - qt_version: 6.9.1
-            qt_arch: linux_gcc_64
-            modules: 'qthttpserver qtwebsockets'
-            cross_qt_arch: 'android_x86'
-          - qt_version: 6.9.1
-            qt_arch: linux_gcc_64
-            modules: 'qthttpserver qtwebsockets'
-            cross_qt_arch: 'android_x86_64'
+          # - qt_version: 6.11.0
+          #   qt_arch: linux_gcc_64
+          #   modules: 'qthttpserver qtwebsockets qt3d qtgraphs qtquick3d qtshadertools'
+          #   cross_qt_arch: 'android_armv7'
+          # - qt_version: 6.11.0
+          #   qt_arch: linux_gcc_64
+          #   modules: 'qthttpserver qtwebsockets qt3d qtgraphs qtquick3d qtshadertools'
+          #   cross_qt_arch: 'android_x86'
+          # - qt_version: 6.11.0
+          #   qt_arch: linux_gcc_64
+          #   modules: 'qthttpserver qtwebsockets qt3d qtgraphs qtquick3d qtshadertools'
+          #   cross_qt_arch: 'android_x86_64'
     env:
       Repository_Name: 'lrctotranslateQuick2'
       BUILD_TYPE: Release
@@ -67,7 +68,7 @@ jobs:
           dir: '${{github.workspace}}/qt'
           install-deps: 'true'
           cache: 'true'
-          aqtversion: '==3.1.*'
+          # aqtversion: '==3.1.*'
           modules: ${{ matrix.modules }}
           # tools: ${{ matrix.tools }}
 
@@ -77,7 +78,7 @@ jobs:
       - name: Install Qt crosscompile target version
         uses: jurplel/install-qt-action@v4
         with:
-          aqtversion: '==3.1.*'
+          # aqtversion: '==3.1.*'
           version: ${{ matrix.qt_version }}
           host: ${{ env.qt_host }}
           target: android
@@ -128,7 +129,7 @@ jobs:
         run: |
           echo ${{ secrets.SIGNINGKEYBASE64 }} > release.keystore.base64
           base64 -d release.keystore.base64 > release.keystore
-          $QT_HOST_ROOT_DIR/bin/androiddeployqt --input $DEPLOYMENT_SETTINGS --output $ANDROID_BUILD_DIR --android-platform android-35 --gradle --release --sign release.keystore alpinemaps --storepass ${{ secrets.KEYSTOREPASSWORD }}
+          $QT_HOST_ROOT_DIR/bin/androiddeployqt --input $DEPLOYMENT_SETTINGS --output $ANDROID_BUILD_DIR --android-platform android-36 --gradle --release --sign release.keystore alpinemaps --storepass ${{ secrets.KEYSTOREPASSWORD }}
           
       - name: Signing Android packages with generated key
         env: 
@@ -136,7 +137,7 @@ jobs:
         if: env.secret_test == ''
         run: |
           keytool -genkey -v -keystore release.keystore -alias alpinemaps -keyalg RSA -sigalg SHA1withRSA -keysize 2048 -validity 10000 -keypass asdfasdf -storepass asdfasdf -dname "CN=Franz, OU=IT, O=Furz, L=Rattenberg, ST=Tirol, C=AT"
-          $QT_HOST_ROOT_DIR/bin/androiddeployqt --input $DEPLOYMENT_SETTINGS --output $ANDROID_BUILD_DIR --android-platform android-35 --gradle --release --sign release.keystore alpinemaps --storepass asdfasdf
+          $QT_HOST_ROOT_DIR/bin/androiddeployqt --input $DEPLOYMENT_SETTINGS --output $ANDROID_BUILD_DIR --android-platform android-36 --gradle --release --sign release.keystore alpinemaps --storepass asdfasdf
           
           README_PATH=$APK_DIR/read_me.txt
           echo "The apk was signed with a generated key which changes every time the apk is generated. This means, that android might refuse to install it if another apk with the same app was installed previously. You'll have to deinstall it. Doing so will delete all settings and cache." >> $README_PATH
