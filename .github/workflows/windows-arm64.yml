@@ -19,7 +19,7 @@ jobs:
         include:
           # 6.10.3
           - qt_version: 6.10.3
-            qt_arch: win64_msvc2022_arm64
+            qt_arch: win64_msvc2022_arm64_cross_compiled
             arch: ARM64
             modules: 'qthttpserver qtwebsockets qt3d qtgraphs qtquick3d qtshadertools'
     env:
